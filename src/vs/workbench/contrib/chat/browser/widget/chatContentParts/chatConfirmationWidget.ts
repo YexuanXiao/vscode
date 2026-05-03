@@ -283,6 +283,7 @@ export interface IChatConfirmationWidget2Options<T> {
 	message: string | IMarkdownString | HTMLElement;
 	icon?: ThemeIcon;
 	subtitle?: string | IMarkdownString;
+	headerBanner?: HTMLElement;
 	buttons: IChatConfirmationButton<T>[];
 	toolbarData?: { arg: unknown; partType: string; partSource?: string };
 }
@@ -326,7 +327,7 @@ abstract class BaseChatConfirmationWidget<T> extends Disposable {
 	) {
 		super();
 
-		const { title, subtitle, message, buttons, icon } = options;
+		const { title, subtitle, message, buttons, icon, headerBanner } = options;
 
 		const elements = dom.h('.chat-confirmation-widget-container@container', [
 			dom.h('.chat-confirmation-widget2@root', [
@@ -352,6 +353,10 @@ abstract class BaseChatConfirmationWidget<T> extends Disposable {
 			new MarkdownString(icon ? `$(${icon.id}) ${typeof title === 'string' ? title : title.value}` : typeof title === 'string' ? title : title.value),
 			subtitle,
 		));
+
+		if (headerBanner) {
+			elements.root.insertBefore(headerBanner, elements.message);
+		}
 
 		this.messageElement = elements.message;
 		const messageParent = this.messageElement.parentElement;
